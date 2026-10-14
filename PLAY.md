@@ -34,7 +34,7 @@
 
 ---
 
-**DAVE H.:** My dog is cool
+**DAVE H.:** My dog is really cool
 
 ---
 
