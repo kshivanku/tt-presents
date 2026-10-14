@@ -10,7 +10,7 @@
 
 ---
 
-**ANAÏS:** Puppies are cool
+**ANAÏS:** Parks are cool
 
 ---
 
