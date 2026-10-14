@@ -74,7 +74,7 @@
 
 ---
 
-**KALLEN:** _(write your line here)_
+**KALLEN:** soup season is cool
 
 ---
 
