@@ -30,7 +30,7 @@
 
 ---
 
-**DAVE B.:** _(write your line here)_
+**DAVE B.:** Malika Favre is cool
 
 ---
 
