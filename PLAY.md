@@ -38,7 +38,7 @@
 
 ---
 
-**ERIK:** _(write your line here)_
+**ERIK:** If you ever drop your keys into a river of molten lava, let 'em go, because man, they're gone. - Deep Thoughts By Jack Handey
 
 ---
 
