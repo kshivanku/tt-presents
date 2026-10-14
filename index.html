@@ -272,7 +272,7 @@
           float front = exp(-pow(behind / (90. * k), 2.));
           float trail = behind > 0. ? exp(-behind / (140. * k)) : 0.;
           off += d / r * (front * 11. + trail * 3.) * k * sin(behind * .03 / k) * introFade;
-          reveal = smoothstep(-60. * k, 160. * k, behind);
+          reveal = smoothstep(0., 220. * k, behind);
         }
         gl_FragColor = texture2D(tex, (px - off) / res) * reveal;
       }`;
@@ -368,10 +368,11 @@
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, art);
       gl.uniform2f(uRes, cssW, cssH);
       gl.uniform1f(uK, scale);
-      // Start the intro wave near the top-left of the first letter.
-      const ox = pad + fontSize * .35, oy = pad + fontSize * .4;
+      // Start the intro wave just off the left edge, level with the middle,
+      // so it sweeps in from the side instead of starting on a letter.
+      const ox = 0, oy = cssH / 2;
       gl.uniform2f(uOrigin, ox, oy);
-      reach = Math.hypot(Math.max(ox, cssW - ox), Math.max(oy, cssH - oy)) + 120 * scale;
+      reach = Math.hypot(Math.max(ox, cssW - ox), Math.max(oy, cssH - oy)) + 240 * scale;
       draw(performance.now());
     }
 
