@@ -57,6 +57,12 @@
   }
   @keyframes rise { to { transform: none; } }
 
+  /* WebGL copy of the headline that ripples under the cursor */
+  h1 { position: relative; }
+  h1 canvas.gl { position: absolute; pointer-events: none; opacity: 0; }
+  h1.gl-on canvas.gl { opacity: 1; }
+  h1.gl-on .word > span { color: transparent; }
+
   .entries {
     list-style: none;
     margin: clamp(48px, 7vw, 96px) 0 0 auto;
@@ -138,6 +144,7 @@
       outer.append(inner);
       h1.append(outer);
     });
+    if (ripple) ripple.refresh();
   }
 
   // Headline drifts up slower than the page and fades as you scroll.
@@ -207,6 +214,231 @@
           '<li class="error">Couldn’t load the list. Try refreshing.</li>';
       }
     }
+  }
+
+  // Liquid ripple: after the intro, the headline is redrawn on a WebGL canvas
+  // in the same spot, and the canvas is warped around the cursor.
+  const RIPPLE_POINTS = 24;
+  const RIPPLE_LIFE = 1.6; // seconds a ripple lasts
+  let ripple = null;
+
+  function startRipple() {
+    const h1 = document.getElementById("title");
+    const canvas = document.createElement("canvas");
+    canvas.className = "gl";
+    canvas.setAttribute("aria-hidden", "true");
+    const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true });
+    if (!gl) return null;
+
+    const vertexSource = `
+      attribute vec2 a;
+      varying vec2 v;
+      void main() {
+        v = vec2(a.x * .5 + .5, .5 - a.y * .5);
+        gl_Position = vec4(a, 0., 1.);
+      }`;
+    const fragmentSource = `
+      precision highp float;
+      uniform sampler2D tex;
+      uniform vec2 res;
+      uniform float k;
+      uniform vec3 pts[${RIPPLE_POINTS}];
+      uniform float str[${RIPPLE_POINTS}];
+      varying vec2 v;
+      void main() {
+        vec2 px = v * res;
+        vec2 off = vec2(0.);
+        for (int i = 0; i < ${RIPPLE_POINTS}; i++) {
+          float age = pts[i].z;
+          if (age < 0. || age > ${RIPPLE_LIFE.toFixed(2)}) continue;
+          vec2 d = px - pts[i].xy;
+          float r = length(d) + .001;
+          float fade = 1. - age / ${RIPPLE_LIFE.toFixed(2)};
+          fade *= fade;
+          float radius = (20. + age * 240.) * k;
+          float ring = exp(-pow((r - radius) / (55. * k), 2.));
+          float wave = sin((r - radius) * .06 / k);
+          off += d / r * ring * wave * fade * str[i] * 8. * k;
+        }
+        // Cap the warp so letters bend without tearing apart.
+        float len = length(off);
+        float cap = 12. * k;
+        if (len > cap) off *= cap / len;
+        gl_FragColor = texture2D(tex, (px - off) / res);
+      }`;
+
+    function shader(type, source) {
+      const s = gl.createShader(type);
+      gl.shaderSource(s, source);
+      gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+      return s;
+    }
+    const program = gl.createProgram();
+    gl.attachShader(program, shader(gl.VERTEX_SHADER, vertexSource));
+    gl.attachShader(program, shader(gl.FRAGMENT_SHADER, fragmentSource));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const aLoc = gl.getAttribLocation(program, "a");
+    gl.enableVertexAttribArray(aLoc);
+    gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+    const u = (name) => gl.getUniformLocation(program, name);
+    const uRes = u("res"), uK = u("k"), uPts = u("pts"), uStr = u("str");
+
+    const born = new Float64Array(RIPPLE_POINTS).fill(-1);
+    const px = new Float32Array(RIPPLE_POINTS);
+    const py = new Float32Array(RIPPLE_POINTS);
+    const strength = new Float32Array(RIPPLE_POINTS);
+    const ptsData = new Float32Array(RIPPLE_POINTS * 3);
+    let next = 0, last = null, raf = 0, scale = 1, cssW = 0, cssH = 0;
+
+    // Draw the headline text into a texture, word by word, at the exact
+    // positions the real text occupies on the page.
+    function build() {
+      const cs = getComputedStyle(h1);
+      const fontSize = parseFloat(cs.fontSize);
+      const pad = Math.round(fontSize * .2);
+      const box = h1.getBoundingClientRect();
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      scale = fontSize / 200;
+      cssW = box.width + pad * 2;
+      cssH = box.height + pad * 2;
+
+      Object.assign(canvas.style, {
+        left: -pad + "px", top: -pad + "px", width: cssW + "px", height: cssH + "px",
+      });
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+
+      const art = document.createElement("canvas");
+      art.width = canvas.width;
+      art.height = canvas.height;
+      const ctx = art.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.font = `${cs.fontWeight} ${fontSize}px ${cs.fontFamily}`;
+      ctx.fillStyle = cs.color;
+      ctx.textBaseline = "alphabetic";
+      const spacing = parseFloat(cs.letterSpacing) || 0;
+      const canSpace = "letterSpacing" in ctx;
+      if (canSpace) ctx.letterSpacing = spacing + "px";
+      const metrics = ctx.measureText("What is cool");
+      const ascent = metrics.fontBoundingBoxAscent;
+      const descent = metrics.fontBoundingBoxDescent;
+
+      h1.querySelectorAll(".word > span").forEach((span) => {
+        const r = span.getBoundingClientRect();
+        let x = r.left - box.left + pad;
+        const y = r.top - box.top + pad + (r.height - (ascent + descent)) / 2 + ascent;
+        if (canSpace) {
+          ctx.fillText(span.textContent, x, y);
+        } else {
+          for (const ch of span.textContent) {
+            ctx.fillText(ch, x, y);
+            x += ctx.measureText(ch).width + spacing;
+          }
+        }
+      });
+
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, art);
+      gl.uniform2f(uRes, cssW, cssH);
+      gl.uniform1f(uK, scale);
+      draw(performance.now());
+    }
+
+    function draw(now) {
+      let active = false;
+      for (let i = 0; i < RIPPLE_POINTS; i++) {
+        const age = born[i] < 0 ? -1 : (now - born[i]) / 1000;
+        const alive = age >= 0 && age <= RIPPLE_LIFE;
+        if (alive) active = true;
+        ptsData[i * 3] = px[i];
+        ptsData[i * 3 + 1] = py[i];
+        ptsData[i * 3 + 2] = alive ? age : -1;
+      }
+      gl.uniform3fv(uPts, ptsData);
+      gl.uniform1fv(uStr, strength);
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      return active;
+    }
+
+    function frame(now) {
+      raf = draw(now) ? requestAnimationFrame(frame) : 0;
+    }
+
+    addEventListener("pointermove", (e) => {
+      const r = canvas.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const margin = 120 * scale;
+      if (x < -margin || y < -margin || x > r.width + margin || y > r.height + margin) {
+        last = null;
+        return;
+      }
+      const now = performance.now();
+      if (last) {
+        const dist = Math.hypot(x - last.x, y - last.y);
+        if (dist < 14 * scale) return;
+        const speed = dist / Math.max(16, now - last.t);
+        strength[next] = Math.min(1, Math.max(.3, speed / 1.2));
+      } else {
+        strength[next] = .5;
+      }
+      px[next] = x;
+      py[next] = y;
+      born[next] = now;
+      next = (next + 1) % RIPPLE_POINTS;
+      last = { x, y, t: now };
+      if (!raf) raf = requestAnimationFrame(frame);
+    }, { passive: true });
+
+    let resizeTimer = 0;
+    addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(build, 150);
+    });
+
+    h1.append(canvas);
+    build();
+    h1.classList.add("gl-on");
+
+    return {
+      // Called when the headline text is rebuilt, which replays the intro.
+      refresh() {
+        h1.classList.remove("gl-on");
+        h1.append(canvas);
+        introFinished().then(() => { build(); h1.classList.add("gl-on"); });
+      },
+    };
+  }
+
+  // Resolves when the headline's rise-in animation has really finished.
+  // Browsers pause animations in background tabs, so a fixed timer isn't enough.
+  function introFinished() {
+    const spans = [...document.querySelectorAll("#title .word > span")];
+    const animations = spans.flatMap((s) => (s.getAnimations ? s.getAnimations() : []));
+    return Promise.all(animations.map((a) => a.finished.catch(() => {})));
+  }
+
+  if (!reduceMotion) {
+    const introDone = introFinished();
+    const fontReady = document.fonts ? document.fonts.load('800 100px "Inter Tight"') : Promise.resolve();
+    Promise.all([introDone, fontReady.catch(() => {})]).then(() => {
+      try { ripple = startRipple(); } catch (e) { console.warn("Ripple off:", e); }
+    });
   }
 
   load();
