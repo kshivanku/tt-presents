@@ -45,8 +45,9 @@
     display: inline-block;
     overflow: hidden;
     vertical-align: top;
-    padding-bottom: .08em;
-    margin-bottom: -.08em;
+    /* Room around each word so the mask doesn't clip letters that reach past it */
+    padding: .04em .12em .08em;
+    margin: -.04em -.12em -.08em;
   }
   h1 .word > span {
     display: inline-block;
