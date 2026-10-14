@@ -269,10 +269,10 @@
           vec2 d = px - origin;
           float r = length(d) + .001;
           float behind = introR - r;
-          float front = exp(-pow(behind / (70. * k), 2.));
-          float trail = behind > 0. ? exp(-behind / (160. * k)) : 0.;
-          off += d / r * (front * 26. + trail * 10.) * k * sin(behind * .05 / k) * introFade;
-          reveal = smoothstep(-30. * k, 60. * k, behind);
+          float front = exp(-pow(behind / (90. * k), 2.));
+          float trail = behind > 0. ? exp(-behind / (140. * k)) : 0.;
+          off += d / r * (front * 11. + trail * 3.) * k * sin(behind * .03 / k) * introFade;
+          reveal = smoothstep(-60. * k, 160. * k, behind);
         }
         gl_FragColor = texture2D(tex, (px - off) / res) * reveal;
       }`;
@@ -307,7 +307,7 @@
     const u = (name) => gl.getUniformLocation(program, name);
     const uRes = u("res"), uK = u("k"), uPts = u("pts"), uStr = u("str");
     const uIntroR = u("introR"), uIntroFade = u("introFade"), uOrigin = u("origin");
-    const INTRO_SECONDS = 1.8;
+    const INTRO_SECONDS = 2.6;
     let introStart = null, introWaiting = false, reach = 0;
 
     const born = new Float64Array(RIPPLE_POINTS).fill(-1);
@@ -398,7 +398,7 @@
           // into place in the first 75% of the intro; the rest lets the wobble settle.
           const p = Math.min(1, t / .75);
           introR = (1 - Math.cos(Math.PI * p)) / 2 * reach;
-          introFade = 1 - t;
+          introFade = (1 - t) * (1 - t);
           active = true;
         }
       }
