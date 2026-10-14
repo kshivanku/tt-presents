@@ -46,7 +46,7 @@
 
 ---
 
-**FEDE:** _(write your line here)_
+**FEDE:** This class is cool
 
 ---
 
