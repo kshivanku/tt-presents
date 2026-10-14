@@ -19,6 +19,9 @@ Your notes for running the exercise. Designers follow `README.md`; this file is 
   - Leave **Require branches to be up to date** off. With it on, every PR would go stale
     the moment you merged another one, and each designer would have to update their
     branch before you could merge.
+- [ ] Merging set to match Thumbtack's iOS repo: **Settings → General → Pull Requests**, with
+  only **Allow squash merging** on (default message: pull request title) and
+  **Automatically delete head branches** on.
 
 ### 2. Collaborator invites
 
@@ -78,8 +81,10 @@ Share the repo link and ask everyone to accept their invite before class.
      **Start a review**, then **Finish your review → Comment**.
    - To ask for a change: **Finish your review → Request changes**. The designer pushes a
      fix to the same branch (README step 6) and the PR updates.
-   - To merge: back on the **Conversation** tab, click **Merge pull request → Confirm merge**,
-     then **Delete branch**. The branch is no longer needed once its change is in `main`.
+   - To merge: back on the **Conversation** tab, click **Squash and merge → Confirm squash and
+     merge**. All the PR's commits become one commit on `main`, titled with the PR's title,
+     and GitHub deletes the branch because it's no longer needed. Squash and merge is the
+     only option, matching Thumbtack's iOS repo.
 5. **Watch the live page update.** Pages takes about a minute to publish after each merge.
 6. **Have everyone pull** (README step 7) to see that their copy now has other people's lines.
 
@@ -90,8 +95,10 @@ change, so the class sees the full round trip. Then speed up and merge the rest.
 
 - **Who wrote which line:** open `PLAY.md` on GitHub and click **Blame**. Every line shows
   who last changed it and in which commit.
-- **Every change in order:** the **Commits** link on the repo's main page.
-- **How the branches came together:** **Insights → Network** draws each branch joining `main`.
+- **Every change in order:** the **Commits** link on the repo's main page. Each merged PR is
+  one commit, so the list reads like the order lines arrived.
+- **What happened inside one PR:** open a closed PR and its **Commits** tab. The typo fixes
+  and other in-between commits are still there, even though `main` only got the squashed one.
 
 ## If something goes wrong
 
