@@ -67,8 +67,8 @@ Share the repo link and ask everyone to accept their invite before class.
 
 ## During class
 
-1. **Show the empty play.** Open the live page on the shared screen: "0 of 26 lines
-   written." Leave it up all session. It checks for new lines every 30 seconds and
+1. **Show the empty page.** Open the live page on the shared screen: "0 of 26 people have
+   said what's cool." Leave it up all session. It checks for new lines every 30 seconds and
    highlights each new one as it arrives.
 2. **Walk through the idea.** `main` is the official version. Everyone makes a branch, changes
    one line, and asks to merge it with a pull request. You review and merge.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tt-presents</title>
+<title>What is cool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -80,10 +80,10 @@
     font-size: clamp(28px, 6vw, 44px);
     line-height: 1.15;
     text-align: center;
-    margin: 0 0 8px;
+    margin: 0 0 32px;
   }
-  hr { border: 0; text-align: center; margin: 28px 0; }
-  hr::after { content: "· · ·"; color: var(--rule); letter-spacing: 6px; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 18px 0; }
+  h1 + hr { display: none; }
   p { margin: 0 0 12px; }
   p.direction { color: var(--muted); text-align: center; }
   p.line { padding-left: 2em; text-indent: -2em; }
@@ -104,7 +104,7 @@
   <div class="count" id="count">Loading…</div>
   <div class="bar"><span id="bar"></span></div>
 </header>
-<main id="play"><p class="direction">Raising the curtain…</p></main>
+<main id="play"><p class="direction">Loading…</p></main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
@@ -152,7 +152,7 @@
 
     writtenBefore = writtenNow;
     document.getElementById("count").innerHTML =
-      "<strong>" + written + "</strong> of " + total + " lines written";
+      "<strong>" + written + "</strong> of " + total + " people have said what's cool";
     document.getElementById("bar").style.width = total ? (written / total * 100) + "%" : "0";
   }
 

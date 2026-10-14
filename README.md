@@ -1,12 +1,11 @@
 # tt-presents
 
-A play written by the whole design team, one line each. You add your line through a pull
-request, Shivanku merges it, and the play grows on the live page:
+**What is cool**, according to the design team, one line each. You add your line through a
+pull request, Shivanku merges it, and the list grows on the live page:
 
 **https://kshivanku.github.io/tt-presents/**
 
-Nobody can see anyone else's line until it's merged, so the play will make no sense. That's
-the point.
+Your line says what you think is cool. Anything goes: "Frog is cool" counts.
 
 ## The rules
 
@@ -50,7 +49,7 @@ directly. Changes reach it only through a pull request.
 ### 3. Write your line
 
 > In PLAY.md, replace the placeholder after **`<YOUR NAME>`:** with this line:
-> "`<your line>`". Don't change anything else. Then show me the diff.
+> "`<something>` is cool". Don't change anything else. Then show me the diff.
 
 **What happens:** Claude edits one line of the file. The *diff* is the list of what changed:
 the old line in red, your new line in green. It should show exactly one line changed. If it
