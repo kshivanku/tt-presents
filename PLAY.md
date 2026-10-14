@@ -102,4 +102,4 @@
 
 ---
 
-**SHIVANKU:** Frog is cool
+**SHIVANKU:** Blue is cool
