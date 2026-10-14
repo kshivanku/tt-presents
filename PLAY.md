@@ -74,7 +74,7 @@
 
 ---
 
-**KALLEN:** soup season is cool
+**KALLEN:** stew season is cool
 
 ---
 
