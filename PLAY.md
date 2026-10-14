@@ -90,7 +90,7 @@
 
 ---
 
-**PAULINE:** _(write your line here)_
+**PAULINE:** Pandas are cool
 
 ---
 
