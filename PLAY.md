@@ -158,7 +158,7 @@
 
 *The music swells. SHIVANKU takes the final spotlight.*
 
-**SHIVANKU:** Fog is cool
+**SHIVANKU:** Frog is cool
 
 ---
 
