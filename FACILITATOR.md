@@ -14,7 +14,7 @@ Your notes for running the exercise. Designers follow `README.md`; this file is 
 - [ ] GitHub Pages on: **Settings → Pages → Deploy from a branch → `main` / root**.
 - [ ] `main` protected: **Settings → Branches → Add rule** for `main`, with
   **Require a pull request before merging** turned on.
-  - Set **Required approvals** to 0. With 1, you'd have to click Approve on all 25 PRs
+  - Set **Required approvals** to 0. With 1, you'd have to click Approve on all 26 PRs
     before merging, and collaborators could approve each other's.
   - Leave **Require branches to be up to date** off. With it on, every PR would go stale
     the moment you merged another one, and each designer would have to update their
@@ -64,7 +64,7 @@ Share the repo link and ask everyone to accept their invite before class.
 
 ## During class
 
-1. **Show the empty play.** Open the live page on the shared screen: "0 of 25 lines
+1. **Show the empty play.** Open the live page on the shared screen: "0 of 26 lines
    written." Leave it up all session. It checks for new lines every 30 seconds and
    highlights each new one as it arrives.
 2. **Walk through the idea.** `main` is the official version. Everyone makes a branch, changes

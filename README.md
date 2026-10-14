@@ -12,7 +12,7 @@ the point.
 
 1. **Change only your own line.** Find your name in `PLAY.md` and replace
    `_(write your line here)_` with your line. Leave everything else alone, including the blank
-   lines. Each slot has untouched lines around it, and that space is what lets 25 people's
+   lines. Each slot has untouched lines around it, and that space is what lets 26 people's
    changes combine without clashing.
 2. **Keep it work-safe and keep Thumbtack out of it.** This repo is public, so anyone on the
    internet can read it. No unreleased features, customer details, metrics, or names of
