@@ -158,7 +158,7 @@
 
 *The music swells. SHIVANKU takes the final spotlight.*
 
-**SHIVANKU:** _(write your line here)_
+**SHIVANKU:** Fog is cool
 
 ---
 
