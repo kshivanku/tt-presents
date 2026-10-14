@@ -14,7 +14,7 @@
 
 ---
 
-**ANDRE:** _(write your line here)_
+**ANDRÉ 3000:** What's cooler than being cool? Ice cold!
 
 ---
 
