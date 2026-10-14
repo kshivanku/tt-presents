@@ -54,7 +54,7 @@
 
 ---
 
-**HANNA:** Pink is cool
+**HANNA:** Purple is cool
 
 ---
 
