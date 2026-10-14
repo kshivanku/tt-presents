@@ -3,108 +3,84 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>What is cool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f1e7;
-    --paper: #fffdf8;
-    --ink: #1f1b16;
-    --muted: #7a6f60;
-    --accent: #a8322d;
-    --rule: #e3d9c6;
-    --empty: #b9ad99;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #15120f;
-      --paper: #1e1a16;
-      --ink: #efe7da;
-      --muted: #a39682;
-      --accent: #e0645c;
-      --rule: #3a332b;
-      --empty: #6b6152;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #15120f;
-    --paper: #1e1a16;
-    --ink: #efe7da;
-    --muted: #a39682;
-    --accent: #e0645c;
-    --rule: #3a332b;
-    --empty: #6b6152;
+    --bg: #141311;
+    --ink: #efe9df;
+    --muted: #8a8378;
+    --faint: #3b3833;
   }
 
   * { box-sizing: border-box; }
+  html, body { margin: 0; }
   body {
-    margin: 0;
+    min-height: 100vh;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Courier Prime", "Courier New", monospace;
-    font-size: 18px;
-    line-height: 1.6;
+    font-family: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  header {
-    position: sticky;
-    top: 0;
-    background: var(--bg);
-    border-bottom: 1px solid var(--rule);
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
+
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 64px) clamp(16px, 5vw, 72px) 96px;
+  }
+
+  .count {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
     color: var(--muted);
-    z-index: 1;
+    margin-bottom: clamp(48px, 10vw, 140px);
   }
-  .count strong { color: var(--accent); font-size: 18px; }
-  .bar { flex: 1; max-width: 240px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; }
-  .bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .6s ease; }
-  main {
-    max-width: 720px;
-    margin: 32px auto 80px;
-    padding: 40px 48px;
-    background: var(--paper);
-    border: 1px solid var(--rule);
-  }
-  @media (max-width: 600px) {
-    main { margin: 0; padding: 28px 16px; border: 0; }
-    body { font-size: 16px; }
-  }
+  .count strong { color: var(--ink); font-weight: 500; }
+
   h1 {
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: clamp(28px, 6vw, 44px);
-    line-height: 1.15;
-    text-align: center;
-    margin: 0 0 32px;
+    margin: 0;
+    font-weight: 800;
+    font-size: clamp(76px, 22vw, 300px);
+    line-height: .86;
+    letter-spacing: -.055em;
+    max-width: 6.2em;
   }
-  hr { border: 0; border-top: 1px solid var(--rule); margin: 18px 0; }
-  h1 + hr { display: none; }
-  p { margin: 0 0 12px; }
-  p.direction { color: var(--muted); text-align: center; }
-  p.line { padding-left: 2em; text-indent: -2em; }
-  p.line strong { color: var(--accent); letter-spacing: .04em; }
-  p.line.empty { color: var(--empty); }
-  p.line.empty strong { color: var(--empty); }
-  p.line.new { animation: arrive 2.4s ease; }
+
+  .entries {
+    list-style: none;
+    margin: clamp(48px, 7vw, 96px) 0 0 auto;
+    padding: 0;
+    width: min(100%, 520px);
+    text-align: right;
+    text-transform: uppercase;
+    font-size: clamp(15px, 1.6vw, 20px);
+    line-height: 1.3;
+    letter-spacing: -.005em;
+  }
+  .entries li { margin: 0; }
+  .entries .name { color: var(--muted); font-size: .72em; letter-spacing: .06em; margin-left: .6em; white-space: nowrap; }
+  .entries li.waiting { color: var(--faint); }
+  .entries li.waiting .name { color: var(--faint); }
+  .entries li.new { animation: arrive 1.6s ease both; }
   @keyframes arrive {
-    0% { background: color-mix(in srgb, var(--accent) 22%, transparent); }
-    100% { background: transparent; }
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
   }
-  p.end { text-align: center; margin-top: 32px; }
-  .error { color: var(--accent); }
+
+  .error { color: var(--muted); text-transform: uppercase; font-size: 14px; letter-spacing: .06em; }
 </style>
 </head>
 <body>
-<header>
-  <div class="count" id="count">Loading…</div>
-  <div class="bar"><span id="bar"></span></div>
-</header>
-<main id="play"><p class="direction">Loading…</p></main>
+<div class="page">
+  <div class="count" id="count">Loading</div>
+  <h1 id="title">What is cool</h1>
+  <ul class="entries" id="entries"></ul>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
@@ -115,45 +91,37 @@
   let writtenBefore = new Set();
 
   function render(source) {
-    const html = DOMPurify.sanitize(marked.parse(source));
-    const play = document.getElementById("play");
-    play.innerHTML = html;
+    const title = source.match(/^# (.+)$/m);
+    if (title) document.getElementById("title").textContent = title[1].trim();
 
-    let total = 0;
-    let written = 0;
+    const list = document.getElementById("entries");
+    list.innerHTML = "";
     const writtenNow = new Set();
+    let total = 0;
 
-    play.querySelectorAll("p").forEach((p) => {
-      const first = p.firstElementChild;
-      const onlyItalic = p.children.length === 1 && first.tagName === "EM" &&
-        p.textContent.trim() === first.textContent.trim();
+    for (const [, name, text] of source.matchAll(/^\*\*(.+?):\*\*\s*(.*)$/gm)) {
+      total++;
+      const li = document.createElement("li");
+      const label = document.createElement("span");
+      label.className = "name";
+      label.textContent = "— " + name;
 
-      if (onlyItalic) {
-        p.classList.add("direction");
-      } else if (first && first.tagName === "STRONG" && first.textContent.trim().endsWith(":")) {
-        total++;
-        p.classList.add("line");
-        const name = first.textContent.trim().slice(0, -1);
-        if (p.textContent.includes(PLACEHOLDER)) {
-          p.classList.add("empty");
-          p.innerHTML = "";
-          p.appendChild(first);
-          const display = name.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
-          p.append(" … waiting for " + display);
-        } else {
-          written++;
-          writtenNow.add(name);
-          if (lastSource !== null && !writtenBefore.has(name)) p.classList.add("new");
-        }
-      } else if (first && first.tagName === "STRONG" && p.textContent.trim() === first.textContent.trim()) {
-        p.classList.add("end");
+      if (text.includes(PLACEHOLDER) || !text.trim()) {
+        li.classList.add("waiting");
+      } else {
+        writtenNow.add(name);
+        const line = document.createElement("span");
+        line.innerHTML = DOMPurify.sanitize(marked.parseInline(text));
+        li.append(line);
+        if (lastSource !== null && !writtenBefore.has(name)) li.classList.add("new");
       }
-    });
+      li.append(label);
+      list.append(li);
+    }
 
     writtenBefore = writtenNow;
     document.getElementById("count").innerHTML =
-      "<strong>" + written + "</strong> of " + total + " people have said what's cool";
-    document.getElementById("bar").style.width = total ? (written / total * 100) + "%" : "0";
+      "<strong>" + writtenNow.size + "</strong> / " + total + " have said what’s cool";
   }
 
   async function load() {
@@ -167,8 +135,8 @@
       }
     } catch (e) {
       if (lastSource === null) {
-        document.getElementById("play").innerHTML =
-          '<p class="error">Couldn\'t load PLAY.md. Try refreshing.</p>';
+        document.getElementById("entries").innerHTML =
+          '<li class="error">Couldn’t load the list. Try refreshing.</li>';
       }
     }
   }
