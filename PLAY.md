@@ -34,7 +34,7 @@
 
 ---
 
-**DAVE H.:** _(write your line here)_
+**DAVE H.:** My dog is really cool
 
 ---
 
