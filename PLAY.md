@@ -54,7 +54,7 @@
 
 ---
 
-**HANNA:** _(write your line here)_
+**HANNA:** Pink is cool
 
 ---
 
