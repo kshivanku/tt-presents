@@ -46,7 +46,7 @@
 
 ---
 
-**FEDE:** This class is cool
+**FEDE:** winter
 
 ---
 
