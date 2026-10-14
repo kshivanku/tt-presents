@@ -33,7 +33,7 @@ Replace the parts in `<angle brackets>`.
 
 ### 1. Get a copy of the repo
 
-> Clone https://github.com/kshivanku/tt-presents into my home folder and open it.
+> Clone https://github.com/kshivanku/tt-presents and open it.
 
 **What happens:** *Cloning* downloads the whole repo to your Mac: every file, plus the history
 of every change ever made. Your copy stays linked to the one on GitHub, so you can send changes
