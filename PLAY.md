@@ -14,7 +14,7 @@
 
 ---
 
-**ANDRÉ 3000:** What's cooler than being cool? Ice cold!
+**ANDRÉ 3000:** What's cooler than being cool? ICE COLD!
 
 ---
 
