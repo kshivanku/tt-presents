@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tt-presents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f1e7;
+    --paper: #fffdf8;
+    --ink: #1f1b16;
+    --muted: #7a6f60;
+    --accent: #a8322d;
+    --rule: #e3d9c6;
+    --empty: #b9ad99;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15120f;
+      --paper: #1e1a16;
+      --ink: #efe7da;
+      --muted: #a39682;
+      --accent: #e0645c;
+      --rule: #3a332b;
+      --empty: #6b6152;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15120f;
+    --paper: #1e1a16;
+    --ink: #efe7da;
+    --muted: #a39682;
+    --accent: #e0645c;
+    --rule: #3a332b;
+    --empty: #6b6152;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Courier Prime", "Courier New", monospace;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--muted);
+    z-index: 1;
+  }
+  .count strong { color: var(--accent); font-size: 18px; }
+  .bar { flex: 1; max-width: 240px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .6s ease; }
+  main {
+    max-width: 720px;
+    margin: 32px auto 80px;
+    padding: 40px 48px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+  @media (max-width: 600px) {
+    main { margin: 0; padding: 28px 16px; border: 0; }
+    body { font-size: 16px; }
+  }
+  h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(28px, 6vw, 44px);
+    line-height: 1.15;
+    text-align: center;
+    margin: 0 0 8px;
+  }
+  hr { border: 0; text-align: center; margin: 28px 0; }
+  hr::after { content: "· · ·"; color: var(--rule); letter-spacing: 6px; }
+  p { margin: 0 0 12px; }
+  p.direction { color: var(--muted); text-align: center; }
+  p.line { padding-left: 2em; text-indent: -2em; }
+  p.line strong { color: var(--accent); letter-spacing: .04em; }
+  p.line.empty { color: var(--empty); }
+  p.line.empty strong { color: var(--empty); }
+  p.line.new { animation: arrive 2.4s ease; }
+  @keyframes arrive {
+    0% { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+    100% { background: transparent; }
+  }
+  p.end { text-align: center; margin-top: 32px; }
+  .error { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="count" id="count">Loading…</div>
+  <div class="bar"><span id="bar"></span></div>
+</header>
+<main id="play"><p class="direction">Raising the curtain…</p></main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+  const PLACEHOLDER = "(write your line here)";
+  const REFRESH_SECONDS = 30;
+  let lastSource = null;
+  let writtenBefore = new Set();
+
+  function render(source) {
+    const html = DOMPurify.sanitize(marked.parse(source));
+    const play = document.getElementById("play");
+    play.innerHTML = html;
+
+    let total = 0;
+    let written = 0;
+    const writtenNow = new Set();
+
+    play.querySelectorAll("p").forEach((p) => {
+      const first = p.firstElementChild;
+      const onlyItalic = p.children.length === 1 && first.tagName === "EM" &&
+        p.textContent.trim() === first.textContent.trim();
+
+      if (onlyItalic) {
+        p.classList.add("direction");
+      } else if (first && first.tagName === "STRONG" && first.textContent.trim().endsWith(":")) {
+        total++;
+        p.classList.add("line");
+        const name = first.textContent.trim().slice(0, -1);
+        if (p.textContent.includes(PLACEHOLDER)) {
+          p.classList.add("empty");
+          p.innerHTML = "";
+          p.appendChild(first);
+          const display = name.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+          p.append(" … waiting for " + display);
+        } else {
+          written++;
+          writtenNow.add(name);
+          if (lastSource !== null && !writtenBefore.has(name)) p.classList.add("new");
+        }
+      } else if (first && first.tagName === "STRONG" && p.textContent.trim() === first.textContent.trim()) {
+        p.classList.add("end");
+      }
+    });
+
+    writtenBefore = writtenNow;
+    document.getElementById("count").innerHTML =
+      "<strong>" + written + "</strong> of " + total + " lines written";
+    document.getElementById("bar").style.width = total ? (written / total * 100) + "%" : "0";
+  }
+
+  async function load() {
+    try {
+      const res = await fetch("PLAY.md?t=" + Date.now(), { cache: "no-store" });
+      if (!res.ok) throw new Error(res.status);
+      const source = await res.text();
+      if (source !== lastSource) {
+        render(source);
+        lastSource = source;
+      }
+    } catch (e) {
+      if (lastSource === null) {
+        document.getElementById("play").innerHTML =
+          '<p class="error">Couldn\'t load PLAY.md. Try refreshing.</p>';
+      }
+    }
+  }
+
+  load();
+  setInterval(load, REFRESH_SECONDS * 1000);
+</script>
+</body>
+</html>
