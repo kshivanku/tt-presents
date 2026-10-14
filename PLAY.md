@@ -90,7 +90,7 @@
 
 ---
 
-**PAULINE:** Pandas are cool
+**PAULINE:** Rainy weather is cool
 
 ---
 
