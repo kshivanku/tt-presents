@@ -102,4 +102,4 @@
 
 ---
 
-**SHIVANKU:** Highlighters are cool
+**SHIVANKU:** Blue is cool
