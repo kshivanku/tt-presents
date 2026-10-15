@@ -18,7 +18,7 @@
 
 ---
 
-**BRITT:** Halloween is cool
+**BRITT:** Pumpkins are cool
 
 ---
 
