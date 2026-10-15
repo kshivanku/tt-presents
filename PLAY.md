@@ -18,7 +18,7 @@
 
 ---
 
-**BRITT:** _(write your line here)_
+**BRITT:** Halloween is cool
 
 ---
 
