@@ -26,7 +26,7 @@
 
 ---
 
-**DAPHNE:** _(write your line here)_
+**DAPHNE:** Art is cool
 
 ---
 
