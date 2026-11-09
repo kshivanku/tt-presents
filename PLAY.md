@@ -70,7 +70,7 @@
 
 ---
 
-**JULIAN:** _(write your line here)_
+**JULIAN:** Photography is cool
 
 ---
 
